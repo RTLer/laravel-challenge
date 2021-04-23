@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'transactions'],function(){
+    Route::get('/', ['App\Http\Controllers\API\TransactionController', 'index']);
+    Route::post('/{type}', ['App\Http\Controllers\API\TransactionController', 'create']);
 });
