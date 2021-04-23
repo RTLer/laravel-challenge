@@ -31,7 +31,6 @@ trait ApiResponse
     public function errorResponse($errors, $message = '', $code = 400, $description = ''): JsonResponse
     {
         $return = [
-            'code'        => $code,
             'message'     => $message,
             'errors'      => $errors,
             'description' => $description
@@ -43,7 +42,7 @@ trait ApiResponse
         return response()->json($return, $code);
     }
 
-    public function errorAuthorization($message)
+    public function errorAuthorization($message): JsonResponse
     {
         return $this->errorResponse([], $message, 403);
     }
