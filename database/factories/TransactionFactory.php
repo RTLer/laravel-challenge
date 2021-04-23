@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Webservice;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class WebserviceFactory extends Factory
+class TransactionFactory extends Factory
 {
     /**
      * Webservice model name of factory
      *
      * @var string
      */
-    protected $model = Webservice::class;
+    protected $model = Transaction::class;
 
     /**
      * fields of model should set into database
@@ -22,7 +22,9 @@ class WebserviceFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'webservice_id' => WebserviceFactory::class,
+            'amount' => $this->faker->randomFloat(null, 1000, 10000),
+            'type' => array_rand(array_values(Transaction::TYPES)),
         ];
     }
 }
