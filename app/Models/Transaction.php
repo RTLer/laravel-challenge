@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ *
+ * @category Model
+ *
+ * @property int id
+ * @property int webservice_id
+ * @property int amount
+ * @property int type
+ *
+ * @property Webservice webservice
+ */
 class Transaction extends Model
 {
     use HasFactory;
@@ -13,7 +24,7 @@ class Transaction extends Model
     const TYPES = [
         'web' => 0,
         'mobile' => 1,
-        'pos' => '2',
+        'pos' => 2,
     ];
 
     /**
