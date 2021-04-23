@@ -13,3 +13,5 @@ npm-debug.log
 yarn-error.log
 15
 supervisord.log
+
+/.idea
