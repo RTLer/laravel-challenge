@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'transactions'],function(){
+Route::group(['prefix' => 'transaction'],function(){
     Route::get('/', ['App\Http\Controllers\API\TransactionController', 'index']);
     Route::post('/{type}', ['App\Http\Controllers\API\TransactionController', 'create']);
 });
