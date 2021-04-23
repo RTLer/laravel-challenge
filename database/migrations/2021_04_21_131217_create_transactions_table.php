@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Webservices extends Migration
+class CreateTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class Webservices extends Migration
      */
     public function up()
     {
-        Schema::create('webservices', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->integer('name');
+            $table->integer('webservice_id')->index();
+            $table->integer('amount');
+            $table->integer('type')->index();//0:web,1:mobile,2:pos
             $table->timestamps();
-        });        
+        });
     }
 
     /**
@@ -27,6 +29,6 @@ class Webservices extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('transactions');
     }
 }
