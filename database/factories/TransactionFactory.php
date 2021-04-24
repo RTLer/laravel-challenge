@@ -23,7 +23,7 @@ class TransactionFactory extends Factory
     {
         return [
             'webservice_id' => WebserviceFactory::class,
-            'amount' => $this->faker->randomFloat(null, 1000, 10000),
+            'amount' => $this->faker->randomFloat(null, 1000, 1000000),
             'type' => array_rand(array_values(Transaction::TYPES)),
         ];
     }
