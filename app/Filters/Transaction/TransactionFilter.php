@@ -16,4 +16,44 @@ class TransactionFilter extends QueryFilters
         return $this->builder->where('webservice_id', '=', "$term");
     }
 
+    public function startId($term): Builder
+    {
+        return $this->builder->where('id', '>', $term);
+    }
+
+    public function EndId($term): Builder
+    {
+        return $this->builder->where('id', '<', $term);
+    }
+
+    public function startIdEqual($term): Builder
+    {
+        return $this->builder->where('id', '>=', $term);
+    }
+
+    public function EndIdEqual($term): Builder
+    {
+        return $this->builder->where('id', '<=', $term);
+    }
+
+    public function amountMore($term): Builder
+    {
+        return $this->builder->where('amount', '>', $term);
+    }
+
+    public function amountFewer($term): Builder
+    {
+        return $this->builder->where('amount', '<', $term);
+    }
+
+    public function amountMoreEqual($term): Builder
+    {
+        return $this->builder->where('amount', '>=', $term);
+    }
+
+    public function amountFewerEqual($term): Builder
+    {
+        return $this->builder->where('amount', '<=', $term);
+    }
+
 }

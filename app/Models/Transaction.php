@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int amount
  * @property int type
  * @property string type_name
+ * @property int total
  * @property Carbon created_at
  *
  * @property Webservice webservice

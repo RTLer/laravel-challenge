@@ -3,11 +3,11 @@
 namespace App\Repositories\Transaction;
 
 use App\Models\Transaction;
-use App\Models\User;
 use App\Repositories\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\Paginator;
 
 /**
  * The repository of customer model
@@ -46,4 +46,10 @@ interface TransactionRepositoryInterface extends BaseRepositoryInterface
      * @return Builder|Transaction
      */
     public function firstOrCreate(array $toSearchAttributes, array $values);
+
+    /**
+     * Calculate Summary of transaction and group by type
+     * @return Builder|Paginator
+     */
+    public function summary();
 }
