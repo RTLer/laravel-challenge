@@ -17,22 +17,6 @@ abstract class TestCase extends BaseTestCase
      * @param array $items
      * @return array
      */
-    protected function responseCollectionStructure($items = []): array
-    {
-        return [
-            'data' => [
-                'items' => [
-                    '*' => $items,
-                ]
-            ],
-            'message'
-        ];
-    }
-
-    /**
-     * @param array $items
-     * @return array
-     */
     protected function responseResourceStructure($items = []): array
     {
         return [

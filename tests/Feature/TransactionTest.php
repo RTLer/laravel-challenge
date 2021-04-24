@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Transaction;
 use App\Models\Webservice;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class TransactionTest extends TestCase
@@ -13,7 +14,7 @@ class TransactionTest extends TestCase
      */
     public function test_pos_transaction_wrong_type_request()
     {
-        $this->postJson("/api/transaction/test",)
+        $this->postJson("/api/transactions/test",)
             ->assertJsonValidationErrors(['amount', 'webservice_id', 'type'])
             ->assertJsonStructure($this->responseErrorStructure())
             ->assertStatus(422);
@@ -42,32 +43,40 @@ class TransactionTest extends TestCase
     /**
      * @return void
      */
-    public function test_get_last_month_statistics()
+    public function test_get_transactions()
     {
-        $response = $this->getJson('/api/transactions');
 
-        $response
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'transactions' => [ // sum of amount beetween these ranges
-                    '0to5000',
-                    '5000to10000',
-                    '10000to100000',
-                    '100000toup',
-                ],
-                'summary' => [
-                    'amount',
-                    'web_count',
-                    'pos_count',
-                    'mobile_count',
-                ],
-            ]);
+        $this->getJson('/api/transactions')->assertStatus(200)
+            ->assertJsonStructure($this->responseResourceStructure([
+                'items' => [
+                    '*' => ['id', 'webservice_id', 'amount', 'type', 'webservice' => ['id', 'name'], 'created_at'],
+                ]
+            ]));
     }
 
+    /**
+     * @return void
+     */
+    public function test_get_last_month_by_id_filter_statistic()
+    {
+        $this->passTestByTransactionSummary('id');
+    }
+
+    /**
+     * @return void
+     */
+    public function test_get_last_month_by_amount_filter_statistic()
+    {
+        $this->passTestByTransactionSummary('amount');
+    }
+
+    /**
+     * @param $type
+     */
     private function createTransactionSuccess($type)
     {
         $this->postJson(
-            "/api/transaction/{$type}",
+            "/api/transactions/{$type}",
             [
                 'amount' => 10000,
                 'webservice_id' => Webservice::query()->first()->id
@@ -86,14 +95,79 @@ class TransactionTest extends TestCase
             ]));
     }
 
+    /**
+     * @param $type
+     */
     private function createTransactionSFailed($type)
     {
         $response = $this->postJson(
-            "/api/transaction/{$type}",
+            "/api/transactions/{$type}",
         );
 
         $response
             ->assertJsonValidationErrors(['amount', 'webservice_id'])
             ->assertStatus(422);
     }
+
+    /**
+     * @param $type
+     */
+    private function passTestByTransactionSummary($type)
+    {
+        $this->rangesIdOrAmount()->map(function ($range) use ($type) {
+
+            $params = $this->generateParams($range, $type);
+
+            $this->json('GET', '/api/transactions/summary', $params, [])->assertStatus(200)
+                ->assertJsonStructure($this->responseResourceStructure([
+                    'items' => [
+                        '*' => ['type', 'total'],
+                    ]
+                ]));
+
+        });
+    }
+
+    /**
+     * @return Collection
+     */
+    private function rangesIdOrAmount(): Collection
+    {
+        return collect([
+            [
+                'start' => 0,
+                'end' => 5000
+            ], [
+                'start' => 5000,
+                'end' => 10000
+            ],
+            [
+                'start' => 10000,
+                'end' => 100000
+            ],
+            [
+                'start' => 100000,
+                'end' => 0
+            ],
+        ]);
+    }
+
+    /**
+     * @param $range
+     * @param $type
+     * @return array
+     */
+    private function generateParams($range, $type): array
+    {
+        $paramsData = collect([]);
+        $withoutEnd = $range['end'] === 0;
+
+
+        $paramsData->put("{$type}_more_equal", $range['start']);
+        if (!$withoutEnd) {
+            $paramsData->put("{$type}_fewer", $range['end']);
+        }
+        return $paramsData->toArray();
+    }
+
 }
