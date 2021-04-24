@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionCreateRequest;
 use App\Http\Resources\TransactionResource;
+use App\Http\Resources\TransactionSummaryResource;
 use App\Repositories\Transaction\TransactionRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -34,11 +35,32 @@ class TransactionController extends Controller
      */
     public function index(): JsonResponse
     {
-
         return $this->successResponse(
             response_resource(
                 $this->transaction_repository->viaFilters(true),
                 TransactionResource::class
+            )
+        );
+    }
+
+    /**
+     * Calculate summary with filter of transaction
+     *
+     * @return JsonResponse
+     */
+    public function indexSummary(): JsonResponse
+    {
+        $separateTypeWithCount = $this->transaction_repository->summary()->get();
+        $queryTotal = $this->transaction_repository->viaFilters(false)->count();
+
+        return $this->successResponse(
+            response_resource(
+                $separateTypeWithCount,
+                TransactionSummaryResource::class,
+                [
+                    'settings' => '',
+                    'total_amount' => $queryTotal,
+                ]
             )
         );
     }
